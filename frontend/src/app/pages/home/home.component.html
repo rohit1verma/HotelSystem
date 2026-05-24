@@ -1,0 +1,94 @@
+<div class="home-wrapper">
+  <!-- Dynamic Hero Banner with generated Lobby Image background -->
+  <section class="hero-section" style="background-image: linear-gradient(rgba(7, 10, 19, 0.55), rgba(7, 10, 19, 0.95)), url('hotel_hero.png');">
+    <div class="hero-content">
+      <h1 class="hero-title animate-fade-in">Aetheris Grand Luxury Hotel</h1>
+      <p class="hero-subtitle animate-fade-in">Experience world-class indulgence, curated modern amenities, and 5-star personalized hospitality.</p>
+
+      <!-- Advanced Quick Search Booking form -->
+      <div class="search-widget glass-panel animate-fade-in">
+        <form [formGroup]="searchForm" (ngSubmit)="onSubmit()" class="search-form-row">
+          <!-- Check-In Date -->
+          <div class="form-group search-group">
+            <label for="checkInDate" class="form-label">Check-In</label>
+            <input
+              type="date"
+              id="checkInDate"
+              formControlName="checkInDate"
+              class="form-control search-control"
+              [min]="minDate"
+            />
+          </div>
+
+          <!-- Check-Out Date -->
+          <div class="form-group search-group">
+            <label for="checkOutDate" class="form-label">Check-Out</label>
+            <input
+              type="date"
+              id="checkOutDate"
+              formControlName="checkOutDate"
+              class="form-control search-control"
+              [min]="minDate"
+            />
+          </div>
+
+          <!-- Guests Count -->
+          <div class="form-group search-group">
+            <label for="numberOfGuests" class="form-label">Guests</label>
+            <input
+              type="number"
+              id="numberOfGuests"
+              formControlName="numberOfGuests"
+              class="form-control search-control"
+              min="1"
+              max="20"
+            />
+          </div>
+
+          <!-- Action Button -->
+          <div class="search-btn-container">
+            <button type="submit" class="btn btn-primary btn-search">Check Availability</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Curated Luxuries / Services segment -->
+  <section class="services-section">
+    <div class="section-header">
+      <h2>Curated Luxuries</h2>
+      <p>Enjoy world-class offerings tailored exclusively for your comfort</p>
+    </div>
+
+    <div class="services-grid">
+      <!-- Fine Dining -->
+      <div class="service-card glass-panel">
+        <div class="service-icon">&#127869;</div>
+        <h3>Fine Gastronomy</h3>
+        <p>Savor Michelin-starred cuisines prepared by culinary wizards in our revolving panoramic dining room.</p>
+      </div>
+
+      <!-- Spa / Wellness -->
+      <div class="service-card glass-panel">
+        <div class="service-icon">&#128134;</div>
+        <h3>Wellness Sanctuary</h3>
+        <p>Revitalize your mind and body with clinical therapies, essential oil steams, and hydrotherapy pools.</p>
+      </div>
+
+      <!-- Infinity Pool -->
+      <div class="service-card glass-panel">
+        <div class="service-icon">&#127946;</div>
+        <h3>Horizon Pool</h3>
+        <p>Unwind in our heated rooftop infinity pool featuring breathtaking views of the city skyline.</p>
+      </div>
+
+      <!-- Concierge service -->
+      <div class="service-card glass-panel">
+        <div class="service-icon">&#128107;</div>
+        <h3>Personal Concierge</h3>
+        <p>Our dedicated multilingual team handles your travel, bookings, and inquiries 24 hours a day.</p>
+      </div>
+    </div>
+  </section>
+</div>

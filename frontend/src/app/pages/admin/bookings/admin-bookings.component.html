@@ -1,0 +1,145 @@
+<div class="admin-bookings-wrapper animate-fade-in">
+  <div class="section-header mb-4">
+    <h2>Manage Customer Bookings</h2>
+    <p>Monitor customer reservation requests, cancel active stays, or issue payment refunds.</p>
+  </div>
+
+  <!-- Search & Filter Bar -->
+  <div class="filters-row glass-panel mb-4">
+    <div class="form-group filter-col">
+      <label class="form-label" for="searchQuery">Search Queries</label>
+      <input
+        type="text"
+        id="searchQuery"
+        [value]="searchQuery()"
+        (input)="onSearchChange($event)"
+        class="form-control"
+        placeholder="Search reference or guest name..."
+      />
+    </div>
+
+    <div class="form-group filter-col">
+      <label class="form-label" for="statusFilter">Status Filter</label>
+      <select id="statusFilter" [value]="statusFilter()" (change)="onFilterChange($event)" class="form-control">
+        <option value="All">All Statuses</option>
+        <option value="Pending">Pending</option>
+        <option value="Confirmed">Confirmed</option>
+        <option value="Cancelled">Cancelled</option>
+        <option value="Completed">Completed</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Bookings Catalog Table -->
+  <section class="bookings-table-section glass-panel">
+    @if (filteredBookings().length > 0) {
+      <div class="table-wrapper animate-fade-in">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Reference</th>
+              <th>Customer</th>
+              <th>Suite Detail</th>
+              <th>Stay Dates</th>
+              <th>Total Stay</th>
+              <th>Booking Status</th>
+              <th>Payment Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (booking of filteredBookings(); track booking.id) {
+              <tr>
+                <td><strong class="font-heading" style="color: var(--accent);">{{ booking.bookingReference }}</strong></td>
+                <td>
+                  <div class="customer-cell">
+                    <strong>{{ booking.customerName }}</strong>
+                    <small style="display: block; color: var(--text-muted); font-size: 0.75rem;">ID: #{{ booking.customerId }}</small>
+                  </div>
+                </td>
+                <td>
+                  <div class="room-cell">
+                    <strong>{{ booking.roomType }}</strong>
+                    <small style="display: block; color: var(--text-muted); font-size: 0.75rem;">Suite {{ booking.roomNumber }}</small>
+                  </div>
+                </td>
+                <td>
+                  <div class="dates-cell" style="font-size: 0.85rem;">
+                    <div>In: <strong>{{ booking.checkInDate | date:'mediumDate' }}</strong></div>
+                    <div>Out: <strong>{{ booking.checkOutDate | date:'mediumDate' }}</strong></div>
+                  </div>
+                </td>
+                <td>
+                  <div class="amount-cell">
+                    <strong>${{ booking.totalAmount }}</strong>
+                    <small style="display: block; color: var(--text-muted); font-size: 0.75rem;">{{ booking.numberOfNights }} nights</small>
+                  </div>
+                </td>
+                <td>
+                  <span class="badge" [class]="'badge-' + booking.status.toLowerCase()">
+                    {{ booking.status }}
+                  </span>
+                </td>
+                <td>
+                  <span class="payment-badge" [class]="booking.paymentStatus?.toLowerCase() === 'success' ? 'paid' : 'unpaid'">
+                    {{ booking.paymentStatus || 'Pending' }}
+                  </span>
+                </td>
+                <td>
+                  <div class="action-buttons-wrap">
+                    @if (booking.status === 'Pending' || booking.status === 'Confirmed') {
+                      <button (click)="openCancelModal(booking.id)" class="btn btn-danger btn-action-tab">&#10007; Cancel</button>
+                    }
+
+                    @if (booking.status === 'Cancelled' && booking.paymentStatus === 'Success') {
+                      <button (click)="onRefundPayment(booking.id)" class="btn btn-primary btn-action-tab" style="background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); box-shadow: none;">
+                        &#8634; Refund
+                      </button>
+                    }
+
+                    <a [routerLink]="['/booking', booking.id]" class="btn btn-secondary btn-action-tab" style="padding: 0.35rem 0.65rem;">Details</a>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <div class="no-bookings text-center py-4">
+        <p>No bookings match the filters selected.</p>
+      </div>
+    }
+  </section>
+
+  <!-- Cancellation Modal Overlay -->
+  @if (showCancelModal()) {
+    <div class="modal-overlay" (click)="closeCancelModal()">
+      <div class="modal-panel" (click)="$event.stopPropagation()">
+        <div class="modal-header d-flex justify-between align-center mb-4">
+          <h3>Admin Cancellation Request</h3>
+          <button (click)="closeCancelModal()" class="btn-close-modal">&times;</button>
+        </div>
+
+        <form [formGroup]="cancelForm" (ngSubmit)="onSubmitCancel()" class="modal-form">
+          <div class="form-group">
+            <label for="cancellationReason" class="form-label">Cancellation Reason</label>
+            <textarea
+              id="cancellationReason"
+              formControlName="cancellationReason"
+              rows="4"
+              class="form-control"
+              placeholder="State reason for admin cancellation..."
+              [class.input-error]="cancelForm.get('cancellationReason')?.touched && cancelForm.get('cancellationReason')?.invalid"
+            ></textarea>
+            @if (cancelForm.get('cancellationReason')?.touched && cancelForm.get('cancellationReason')?.invalid) {
+              <span class="field-error animate-fade-in">Cancellation reason is required (max 300 characters).</span>
+            }
+          </div>
+
+          <button type="submit" class="btn btn-danger btn-submit-cancel">Execute Cancellation</button>
+        </form>
+      </div>
+    </div>
+  }
+</div>

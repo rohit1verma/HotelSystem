@@ -1,0 +1,118 @@
+<div class="register-wrapper">
+  <div class="register-container glass-panel">
+    <div class="register-header">
+      <h2>Create Account</h2>
+      <p>Sign up to reserve luxury accommodations and track bookings</p>
+    </div>
+
+    @if (errorMessage()) {
+      <div class="error-banner animate-fade-in">
+        <span class="error-banner-icon">&#9888;</span>
+        <span class="error-banner-text">{{ errorMessage() }}</span>
+      </div>
+    }
+
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
+      <!-- Full Name -->
+      <div class="form-group">
+        <label for="fullName" class="form-label">Full Name</label>
+        <input
+          type="text"
+          id="fullName"
+          formControlName="fullName"
+          class="form-control"
+          placeholder="e.g. John Doe"
+          [class.input-error]="registerForm.get('fullName')?.touched && registerForm.get('fullName')?.invalid"
+        />
+        @if (registerForm.get('fullName')?.touched && registerForm.get('fullName')?.invalid) {
+          <span class="field-error animate-fade-in">Full name is required.</span>
+        }
+      </div>
+
+      <!-- Email Address -->
+      <div class="form-group">
+        <label for="email" class="form-label">Email Address</label>
+        <input
+          type="email"
+          id="email"
+          formControlName="email"
+          class="form-control"
+          placeholder="john.doe@example.com"
+          [class.input-error]="registerForm.get('email')?.touched && registerForm.get('email')?.invalid"
+        />
+        @if (registerForm.get('email')?.touched && registerForm.get('email')?.invalid) {
+          <span class="field-error animate-fade-in">
+            @if (registerForm.get('email')?.hasError('required')) { Email is required. }
+            @else if (registerForm.get('email')?.hasError('email')) { Please enter a valid email address. }
+          </span>
+        }
+      </div>
+
+      <!-- Phone Number -->
+      <div class="form-group">
+        <label for="phone" class="form-label">Phone Number</label>
+        <input
+          type="tel"
+          id="phone"
+          formControlName="phone"
+          class="form-control"
+          placeholder="e.g. +1234567890"
+          [class.input-error]="registerForm.get('phone')?.touched && registerForm.get('phone')?.invalid"
+        />
+        @if (registerForm.get('phone')?.touched && registerForm.get('phone')?.invalid) {
+          <span class="field-error animate-fade-in">Enter a valid phone number (8-15 digits).</span>
+        }
+      </div>
+
+      <!-- Password Rows -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="password" class="form-label">Password</label>
+          <input
+            [type]="showPassword() ? 'text' : 'password'"
+            id="password"
+            formControlName="password"
+            class="form-control"
+            placeholder="Min 8 chars"
+            [class.input-error]="registerForm.get('password')?.touched && registerForm.get('password')?.invalid"
+          />
+          @if (registerForm.get('password')?.touched && registerForm.get('password')?.invalid) {
+            <span class="field-error animate-fade-in">Requires at least 8 characters.</span>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="confirmPassword" class="form-label">Confirm</label>
+          <input
+            [type]="showPassword() ? 'text' : 'password'"
+            id="confirmPassword"
+            formControlName="confirmPassword"
+            class="form-control"
+            placeholder="Min 8 chars"
+            [class.input-error]="registerForm.get('confirmPassword')?.touched && registerForm.get('confirmPassword')?.invalid"
+          />
+          @if (registerForm.get('confirmPassword')?.touched && registerForm.get('confirmPassword')?.invalid) {
+            <span class="field-error animate-fade-in">
+              @if (registerForm.get('confirmPassword')?.hasError('required')) { Confirm required. }
+              @else if (registerForm.get('confirmPassword')?.hasError('passwordMismatch')) { Passwords do not match. }
+            </span>
+          }
+        </div>
+      </div>
+
+      <!-- Toggle Passwords visibility option -->
+      <div class="toggle-password-row">
+        <button type="button" class="btn-toggle-password-global" (click)="togglePasswordVisibility()">
+          {{ showPassword() ? 'Hide' : 'Show' }} Passwords
+        </button>
+      </div>
+
+      <!-- Submit button -->
+      <button type="submit" class="btn btn-primary btn-submit">Create Account</button>
+    </form>
+
+    <div class="register-footer">
+      <p>Already have an account? <a routerLink="/login">Sign in</a></p>
+    </div>
+  </div>
+</div>

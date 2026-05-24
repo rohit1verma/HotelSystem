@@ -1,0 +1,16 @@
+@if (alertService.alert(); as activeAlert) {
+  <div class="alert-toast" [class]="'alert-' + activeAlert.type">
+    <div class="alert-icon">
+      @switch (activeAlert.type) {
+        @case ('success') { <span class="icon-span">&#10003;</span> }
+        @case ('error') { <span class="icon-span">&#10007;</span> }
+        @case ('warning') { <span class="icon-span">&#9888;</span> }
+        @case ('info') { <span class="icon-span">&#8505;</span> }
+      }
+    </div>
+    <div class="alert-content">
+      {{ activeAlert.message }}
+    </div>
+    <button class="alert-close" (click)="alertService.clear()">&times;</button>
+  </div>
+}

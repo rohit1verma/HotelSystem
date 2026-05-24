@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Aetheris Grand Luxury Hotel & Suites | Premium Booking System</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Experience world-class luxury and comfort at Aetheris Grand Hotel & Suites. Book five-star accommodations, deluxe rooms, and executive penthouses seamlessly." />
+    <meta name="keywords" content="luxury hotel, five-star hotel booking, suites, premium rooms booking system, aetheris grand" />
+    <meta name="author" content="Aetheris Hospitality Group" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  </head>
+  <body>
+    <app-root>
+      <!-- Premium Inline Preloader while Angular Bundle Loads -->
+      <style>
+        .preloader-container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          min-height: 100vh;
+          background-color: #070a13;
+          color: #f3f4f6;
+          font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        .preloader-spinner {
+          width: 50px;
+          height: 50px;
+          border: 3px solid rgba(59, 130, 246, 0.1);
+          border-top-color: #3b82f6;
+          border-radius: 50%;
+          animation: spin 1s infinite linear;
+          margin-bottom: 1.5rem;
+        }
+        .preloader-text {
+          font-size: 1.1rem;
+          font-weight: 400;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+          opacity: 0.8;
+        }
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      </style>
+      <div class="preloader-container">
+        <div class="preloader-spinner"></div>
+        <div class="preloader-text">Loading Aetheris...</div>
+      </div>
+    </app-root>
+  </body>
+</html>

@@ -1,0 +1,304 @@
+.detail-page-wrapper {
+  padding-top: 1rem;
+}
+
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-muted);
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color var(--transition-fast);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.btn-back:hover {
+  color: #fff;
+}
+
+.detail-layout {
+  display: flex;
+  gap: 2.5rem;
+  align-items: flex-start;
+  margin-top: 1rem;
+}
+
+.detail-main {
+  flex-grow: 1;
+  max-width: 820px;
+}
+
+.detail-main h2 {
+  font-size: 1.85rem;
+  background: linear-gradient(135deg, #fff 0%, var(--text-muted) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.ref-sub {
+  color: var(--accent);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 0.05em;
+  margin-top: 0.25rem;
+  text-shadow: 0 0 8px var(--accent-glow);
+}
+
+.suite-info-box {
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-glow);
+  padding: 1.25rem;
+  border-radius: var(--radius-sm);
+}
+
+.suite-info-icon {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.room-title-sub {
+  font-size: 1.25rem;
+  color: #fff;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.capacity-desc {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.detail-main h3 {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--border-glow);
+  padding-bottom: 0.5rem;
+  background: linear-gradient(135deg, #fff 0%, var(--text-muted) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.itinerary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.itinerary-node {
+  background: rgba(7, 10, 19, 0.35);
+  border: 1px solid var(--border-glow);
+  padding: 1.25rem;
+  border-radius: var(--radius-sm);
+}
+
+.node-label {
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
+}
+
+.node-val {
+  font-size: 1rem;
+  color: #fff;
+  font-weight: 600;
+  font-family: var(--font-heading);
+}
+
+.bill-summary-box {
+  background-color: rgba(7, 10, 19, 0.45);
+  border: 1px solid var(--border-glow);
+  border-radius: var(--radius-sm);
+  padding: 1.25rem;
+}
+
+.bill-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.6rem 0;
+  font-size: 0.9rem;
+  align-items: center;
+}
+
+.bill-row.border-top {
+  border-top: 1px solid var(--border-glow);
+  margin-top: 0.25rem;
+  padding-top: 0.75rem;
+}
+
+.bill-label {
+  color: var(--text-muted);
+}
+
+.bill-val {
+  color: #fff;
+  font-weight: 500;
+}
+
+.total-label {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.total-val {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--success);
+  font-family: var(--font-heading);
+}
+
+.payment-badge {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+}
+
+.payment-badge.paid {
+  background-color: var(--success-glow);
+  color: var(--success);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.payment-badge.unpaid {
+  background-color: var(--warning-glow);
+  color: var(--warning);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+/* Sidebar Option */
+.detail-sidebar {
+  width: 360px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 90px;
+}
+
+.detail-sidebar h3 {
+  font-size: 1.4rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-glow);
+  padding-bottom: 0.75rem;
+  background: linear-gradient(135deg, #fff 0%, var(--text-muted) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.checkout-prompt-panel {
+  background-color: rgba(59, 130, 246, 0.05);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  padding: 1.5rem;
+  border-radius: var(--radius-sm);
+}
+
+.prompt-icon {
+  font-size: 2.5rem;
+  line-height: 1;
+  display: inline-block;
+  margin-bottom: 0.75rem;
+}
+
+.checkout-prompt-panel h4 {
+  font-size: 1.15rem;
+  margin-bottom: 0.5rem;
+  color: #fff;
+}
+
+.checkout-prompt-panel p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.btn-book-action {
+  width: 100%;
+  padding: 0.8rem;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.cancel-request-panel h4 {
+  font-size: 1.15rem;
+  margin-bottom: 0.5rem;
+  color: var(--error);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.cancel-request-panel p {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.btn-cancel-booking-action {
+  width: 100%;
+  padding: 0.8rem;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 0.5rem;
+}
+
+.cancelled-summary-panel h4 {
+  font-size: 1.15rem;
+  margin-bottom: 0.5rem;
+  color: var(--error);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.cancellation-reason-box {
+  background-color: rgba(7, 10, 19, 0.35);
+  border: 1px solid var(--border-glow);
+  padding: 1rem;
+  border-radius: var(--radius-sm);
+}
+
+.cancellation-reason-box h5 {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
+}
+
+.cancellation-reason-box p {
+  font-size: 0.9rem;
+  color: #fff;
+  line-height: 1.5;
+}
+
+.input-error {
+  border-color: var(--error) !important;
+  box-shadow: 0 0 0 3px var(--error-glow) !important;
+}
+
+.field-error {
+  color: #f87171;
+  font-size: 0.8rem;
+  margin-top: 0.3rem;
+  display: block;
+}
+
+@media (max-width: 992px) {
+  .detail-layout {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .detail-main {
+    max-width: 100%;
+  }
+  .detail-sidebar {
+    width: 100%;
+    position: static;
+  }
+}

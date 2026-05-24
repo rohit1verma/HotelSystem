@@ -1,0 +1,164 @@
+.admin-reports-wrapper {
+  padding-top: 1rem;
+}
+
+.section-header h2 {
+  font-size: 2rem;
+  background: linear-gradient(135deg, #fff 0%, var(--text-muted) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.section-header p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.filters-row {
+  display: flex;
+  gap: 1.5rem;
+  padding: 1.5rem 2rem;
+  flex-wrap: wrap;
+}
+
+.search-horizontal-form {
+  display: flex;
+  align-items: flex-end;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.search-col {
+  flex: 1;
+  min-width: 220px;
+  margin-bottom: 0;
+}
+
+.search-action-btn {
+  padding: 0.75rem 1.5rem;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  height: 46px;
+  min-width: 180px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+
+.stat-card {
+  text-align: center;
+  padding: 1.75rem 1.25rem;
+}
+
+.stat-icon {
+  font-size: 2.25rem;
+  line-height: 1;
+  display: inline-block;
+  margin-bottom: 0.75rem;
+}
+
+.stat-value {
+  font-family: var(--font-heading);
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.2;
+  margin-bottom: 0.25rem;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.occupancy-section {
+  margin-top: 2.5rem;
+}
+
+.occupancy-section h3 {
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #fff 0%, var(--text-muted) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.occupancy-cell {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  max-width: 320px;
+}
+
+.occupancy-pill {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  min-width: 55px;
+  text-align: center;
+}
+
+.occupancy-pill.high-occupancy {
+  background-color: var(--success-glow);
+  color: var(--success);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.occupancy-pill.mid-occupancy {
+  background-color: var(--warning-glow);
+  color: var(--warning);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.occupancy-pill.low-occupancy {
+  background-color: var(--error-glow);
+  color: var(--error);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.occupancy-bar-bg {
+  flex-grow: 1;
+  background-color: rgba(255, 255, 255, 0.05);
+  height: 6px;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.occupancy-bar {
+  height: 100%;
+  border-radius: 3px;
+}
+
+.occupancy-bar.high-occupancy {
+  background-color: var(--success);
+  box-shadow: 0 0 8px var(--success-glow);
+}
+
+.occupancy-bar.mid-occupancy {
+  background-color: var(--warning);
+  box-shadow: 0 0 8px var(--warning-glow);
+}
+
+.occupancy-bar.low-occupancy {
+  background-color: var(--error);
+  box-shadow: 0 0 8px var(--error-glow);
+}
+
+.no-occupancy p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+@media (max-width: 768px) {
+  .search-horizontal-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

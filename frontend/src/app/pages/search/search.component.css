@@ -1,0 +1,234 @@
+.search-page-wrapper {
+  padding-top: 1rem;
+}
+
+.search-horizontal-form {
+  display: flex;
+  align-items: flex-end;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.search-col {
+  flex: 1;
+  min-width: 180px;
+  margin-bottom: 0;
+}
+
+.search-action-btn {
+  padding: 0.75rem 1.5rem;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  height: 46px;
+  min-width: 160px;
+}
+
+.search-layout {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+  margin-top: 1.5rem;
+}
+
+.search-filters-sidebar {
+  width: 320px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 90px;
+}
+
+.search-filters-sidebar h3 {
+  font-size: 1.4rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-glow);
+  padding-bottom: 0.75rem;
+  background: linear-gradient(135deg, #fff 0%, var(--text-muted) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.filter-group {
+  margin-bottom: 2rem;
+}
+
+.filter-group:last-child {
+  margin-bottom: 0;
+}
+
+.filter-title {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+
+.type-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.filter-type-btn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-glow);
+  color: var(--text-muted);
+  padding: 0.4rem 0.85rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-family: var(--font-heading);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.filter-type-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--border-glow-hover);
+  color: #fff;
+}
+
+.filter-type-btn.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+  box-shadow: 0 0 12px var(--primary-glow);
+}
+
+.price-header {
+  margin-bottom: 0.5rem;
+}
+
+.price-value {
+  color: var(--primary-hover);
+  font-weight: 700;
+  font-family: var(--font-heading);
+}
+
+.price-slider {
+  width: 100%;
+  -webkit-appearance: none;
+  background: var(--bg-main);
+  height: 6px;
+  border-radius: 3px;
+  outline: none;
+  border: 1px solid var(--border-glow);
+}
+
+.price-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--primary);
+  cursor: pointer;
+  box-shadow: 0 0 10px var(--primary-glow);
+  transition: transform var(--transition-fast);
+}
+
+.price-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.25);
+  background: var(--primary-hover);
+}
+
+.slider-labels {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.rooms-catalog {
+  flex-grow: 1;
+}
+
+.room-amenities-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.amenity-pill {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--accent);
+  background-color: var(--accent-glow);
+  border: 1px solid rgba(0, 242, 254, 0.2);
+  padding: 0.25rem 0.65rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.room-price-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.price-amount {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #fff;
+  font-family: var(--font-heading);
+  line-height: 1.1;
+}
+
+.price-period {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 0.1rem;
+}
+
+.stay-total {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 0.4rem;
+}
+
+.stay-total strong {
+  color: var(--success);
+}
+
+.btn-view {
+  padding: 0.6rem 1.25rem;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.no-rooms-panel {
+  padding: 4rem 2rem;
+}
+
+.no-rooms-icon {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+  line-height: 1;
+  display: inline-block;
+  opacity: 0.4;
+}
+
+.no-rooms-panel h3 {
+  font-size: 1.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.no-rooms-panel p {
+  color: var(--text-muted);
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+@media (max-width: 992px) {
+  .search-layout {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .search-filters-sidebar {
+    width: 100%;
+    position: static;
+    margin-bottom: 1.5rem;
+  }
+}

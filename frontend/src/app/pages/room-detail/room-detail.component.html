@@ -1,0 +1,90 @@
+@if (room(); as currentRoom) {
+  <div class="detail-page-wrapper">
+    <!-- Back to search results preservation link -->
+    <div class="back-link-container mb-4">
+      <a [routerLink]="['/search']" [queryParams]="{ checkInDate: checkInDate(), checkOutDate: checkOutDate(), numberOfGuests: numberOfGuests() }" class="btn-back">
+        &larr; Back to Search Catalog
+      </a>
+    </div>
+
+    <div class="detail-layout">
+      <!-- Main Content specifications -->
+      <div class="detail-main glass-panel">
+        <img [src]="currentRoom.imageUrl || 'hotel_hero.png'" [alt]="currentRoom.roomType" class="detail-hero-image" />
+
+        <div class="room-title-section mt-4 mb-4">
+          <div class="d-flex justify-between align-center">
+            <h1>{{ currentRoom.roomType }} Suite</h1>
+            <span class="room-number-tag">Suite #{{ currentRoom.roomNumber }}</span>
+          </div>
+          <p class="capacity-desc">Accommodates up to {{ currentRoom.maxGuests }} guests</p>
+        </div>
+
+        <div class="room-description-section mb-4">
+          <h3>Luxury Suite Description</h3>
+          <p>{{ currentRoom.description || 'Welcome to a world of absolute relaxation. Experience five-star comfort decorated with modern layouts, high-quality finishes, and exquisite design flourishes.' }}</p>
+        </div>
+
+        <div class="room-amenities-section">
+          <h3>Included Premium Amenities</h3>
+          <div class="amenities-grid">
+            @for (amenity of splitAmenities(currentRoom.amenities); track amenity) {
+              <div class="amenity-detail-pill">
+                <span class="amenity-pill-icon">&#10024;</span>
+                <span class="amenity-pill-text">{{ amenity }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Pricing & Stay summary widget sidebar -->
+      <aside class="detail-sidebar glass-panel">
+        <h3>Reservation Details</h3>
+
+        <!-- Pricing tier -->
+        <div class="price-widget mb-4">
+          <span class="price-big">${{ currentRoom.pricePerNight }}</span>
+          <span class="price-tag">/ night</span>
+        </div>
+
+        @if (checkInDate() && checkOutDate()) {
+          <!-- Stay summary details -->
+          <div class="stay-summary-box mb-4">
+            <h4 class="summary-box-title">Stay Summary</h4>
+            <div class="summary-box-row">
+              <span class="box-label">Check-In</span>
+              <span class="box-val">{{ checkInDate() }}</span>
+            </div>
+            <div class="summary-box-row">
+              <span class="box-label">Check-Out</span>
+              <span class="box-val">{{ checkOutDate() }}</span>
+            </div>
+            <div class="summary-box-row">
+              <span class="box-label">Guests Count</span>
+              <span class="box-val">{{ numberOfGuests() }} guests</span>
+            </div>
+            <div class="summary-box-row border-top">
+              <span class="box-label">Total Stay</span>
+              <span class="box-val">{{ numberOfNights() }} nights</span>
+            </div>
+            <div class="summary-box-row border-top">
+              <span class="box-label total-label">Stay Cost</span>
+              <span class="box-val total-val">${{ totalPrice() }}</span>
+            </div>
+          </div>
+
+          <button (click)="onBookNow()" class="btn btn-primary btn-book-action">Request Booking</button>
+        } @else {
+          <!-- Missing Parameters alert -->
+          <div class="dates-missing-alert text-center mb-4">
+            <span class="alert-symbol">&#9888;</span>
+            <p>Please configure check-in and check-out dates to process reservation bookings.</p>
+          </div>
+
+          <a routerLink="/search" class="btn btn-secondary btn-book-action text-center">Configure Dates</a>
+        }
+      </aside>
+    </div>
+  </div>
+}

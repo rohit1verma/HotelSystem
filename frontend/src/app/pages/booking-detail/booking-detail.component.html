@@ -1,0 +1,129 @@
+@if (booking(); as detail) {
+  <div class="detail-page-wrapper animate-fade-in">
+    <!-- Back links -->
+    <div class="back-link-container mb-4">
+      <a routerLink="/my-bookings" class="btn-back">
+        &larr; Back to My Bookings
+      </a>
+    </div>
+
+    <div class="detail-layout">
+      <!-- Main Itinerary Details -->
+      <div class="detail-main glass-panel">
+        <div class="d-flex justify-between align-center mb-4 border-bottom pb-4">
+          <div>
+            <h2>Booking Specification</h2>
+            <p class="ref-sub">{{ detail.bookingReference }}</p>
+          </div>
+          <span class="badge" [class]="'badge-' + detail.status.toLowerCase()">{{ detail.status }}</span>
+        </div>
+
+        <!-- Suite Profile Preview -->
+        <div class="suite-info-box d-flex gap-2 mb-4 align-center">
+          <span class="suite-info-icon">&#127976;</span>
+          <div>
+            <h3 class="room-title-sub">{{ detail.roomType }} Suite</h3>
+            <p class="capacity-desc">Suite #{{ detail.roomNumber }} | Accommodates {{ detail.numberOfGuests }} guests</p>
+          </div>
+        </div>
+
+        <!-- Itinerary dates summary -->
+        <div class="stay-itinerary-section mb-4">
+          <h3>Itinerary Summary</h3>
+          <div class="itinerary-grid">
+            <div class="itinerary-node">
+              <span class="node-label">Check-In Date</span>
+              <span class="node-val">{{ detail.checkInDate | date:'fullDate' }}</span>
+            </div>
+            <div class="itinerary-node">
+              <span class="node-label">Check-Out Date</span>
+              <span class="node-val">{{ detail.checkOutDate | date:'fullDate' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bill Financial Breakdown -->
+        <div class="billing-section">
+          <h3>Billing & Stay Financials</h3>
+
+          <div class="bill-summary-box mb-4">
+            <div class="bill-row">
+              <span class="bill-label">Staying Cost per night</span>
+              <span class="bill-val">${{ detail.totalAmount / detail.numberOfNights | number:'1.0-2' }}</span>
+            </div>
+            <div class="bill-row">
+              <span class="bill-label">Staying Length</span>
+              <span class="bill-val">{{ detail.numberOfNights }} nights</span>
+            </div>
+            <div class="bill-row border-top">
+              <span class="bill-label total-label">Grand Total Stay Cost</span>
+              <span class="bill-val total-val">${{ detail.totalAmount }}</span>
+            </div>
+
+            <div class="bill-row border-top">
+              <span class="bill-label">Financial Transaction Status</span>
+              <span class="payment-badge" [class]="detail.paymentStatus?.toLowerCase() === 'success' ? 'paid' : 'unpaid'">
+                {{ detail.paymentStatus || 'Pending' }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reservation Options Sidebar -->
+      <aside class="detail-sidebar glass-panel">
+        <h3>Reservation Options</h3>
+
+        <!-- Checkout / Pay CTA for unpaid pending reservations -->
+        @if (detail.status === 'Pending' && (!detail.paymentStatus || detail.paymentStatus === 'Pending')) {
+          <div class="checkout-prompt-panel text-center mb-4">
+            <span class="prompt-icon">&#128181;</span>
+            <h4>Checkout Required</h4>
+            <p class="mb-4">This booking is currently in pending state and requires immediate checkout processing to secure dates.</p>
+            <a [routerLink]="['/payment', detail.id]" class="btn btn-primary btn-book-action text-center">Complete Payment Now</a>
+          </div>
+        }
+
+        <!-- Cancellation Requests -->
+        @if (detail.status === 'Pending' || detail.status === 'Confirmed') {
+          <div class="cancel-request-panel">
+            <h4>Cancel Accommodation</h4>
+            <p class="mb-4">Need to cancel your reservation? Provide a cancellation reason below to submit the request.</p>
+
+            <form [formGroup]="cancelForm" (ngSubmit)="onCancelBooking()" class="cancel-reactive-form">
+              <div class="form-group">
+                <label for="cancellationReason" class="form-label">Cancellation Reason</label>
+                <textarea
+                  id="cancellationReason"
+                  formControlName="cancellationReason"
+                  rows="3"
+                  class="form-control"
+                  placeholder="Provide reason for cancellation..."
+                  [class.input-error]="cancelForm.get('cancellationReason')?.touched && cancelForm.get('cancellationReason')?.invalid"
+                ></textarea>
+                @if (cancelForm.get('cancellationReason')?.touched && cancelForm.get('cancellationReason')?.invalid) {
+                  <span class="field-error animate-fade-in">Reason is required (max 300 characters).</span>
+                }
+              </div>
+
+              <button type="submit" class="btn btn-danger btn-cancel-booking-action">Request Cancellation</button>
+            </form>
+          </div>
+        } @else if (detail.status === 'Cancelled') {
+          <!-- Cancelled Refund specs -->
+          <div class="cancelled-summary-panel">
+            <h4 class="text-error">Cancellation Details</h4>
+            <div class="summary-box-row border-top" style="padding: 0.5rem 0;">
+              <span class="box-label">Refund Amount</span>
+              <span class="box-val text-success" style="font-weight: 700;">${{ detail.refundAmount || 0 }}</span>
+            </div>
+            <div class="cancellation-reason-box mt-4">
+              <h5>Cancellation Reason:</h5>
+              <p>{{ detail.cancellationReason || 'No reason specified.' }}</p>
+            </div>
+          </div>
+        }
+      </aside>
+    </div>
+  </div>
+}

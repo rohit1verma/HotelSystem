@@ -1,0 +1,139 @@
+.my-bookings-wrapper {
+  padding-top: 1rem;
+}
+
+.section-header h2 {
+  font-size: 2rem;
+  background: linear-gradient(135deg, #fff 0%, var(--text-muted) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.section-header p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.bookings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 2rem;
+  margin-top: 1.5rem;
+}
+
+.booking-history-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-glow);
+  transition: transform var(--transition-normal), border var(--transition-fast);
+}
+
+.booking-history-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.booking-ref {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.05em;
+  font-size: 1.05rem;
+}
+
+.room-title {
+  font-size: 1.25rem;
+  margin-bottom: 0.75rem;
+  color: #fff;
+}
+
+.dates-range, .guests-volume, .stay-cost {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
+}
+
+.dates-range strong, .guests-volume strong, .stay-cost strong {
+  color: var(--text-main);
+}
+
+.booking-card-footer {
+  padding-top: 1rem;
+  margin-top: 1rem;
+  border-top: 1px solid var(--border-glow);
+}
+
+.payment-status small {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.payment-badge {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: inline-block;
+  margin-top: 0.15rem;
+}
+
+.payment-badge.paid {
+  color: var(--success);
+}
+
+.payment-badge.unpaid {
+  color: var(--warning);
+}
+
+.booking-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.btn-pay-now {
+  padding: 0.45rem 1rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.btn-details {
+  padding: 0.45rem 1rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.empty-bookings {
+  padding: 5rem 2rem;
+  margin-top: 2rem;
+}
+
+.empty-icon {
+  font-size: 4.5rem;
+  line-height: 1;
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  opacity: 0.4;
+}
+
+.empty-bookings h3 {
+  font-size: 1.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.empty-bookings p {
+  color: var(--text-muted);
+  max-width: 480px;
+  margin: 0 auto 1.5rem;
+}
+
+@media (max-width: 576px) {
+  .section-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+}

@@ -1,0 +1,98 @@
+<div class="admin-reports-wrapper animate-fade-in">
+  <div class="section-header mb-4">
+    <h2>Analytics & Reports</h2>
+    <p>Generate financial summaries, evaluate room occupancy metrics, and review stay records.</p>
+  </div>
+
+  <!-- Custom Dates Selector Widget -->
+  <div class="filters-row glass-panel mb-4">
+    <form [formGroup]="reportForm" (ngSubmit)="loadReport()" class="search-horizontal-form" style="width: 100%;">
+      <div class="form-group search-col">
+        <label class="form-label" for="from">From Date</label>
+        <input type="date" id="from" formControlName="from" class="form-control" />
+      </div>
+
+      <div class="form-group search-col">
+        <label class="form-label" for="to">To Date</label>
+        <input type="date" id="to" formControlName="to" class="form-control" />
+      </div>
+
+      <button type="submit" class="btn btn-primary search-action-btn">Generate Report</button>
+    </form>
+  </div>
+
+  @if (report(); as summary) {
+    <!-- Financial Summary widgets -->
+    <div class="stats-grid mb-4">
+      <div class="stat-card glass-panel animate-fade-in">
+        <span class="stat-icon">&#128188;</span>
+        <div class="stat-value">${{ summary.totalRevenue | number:'1.0-2' }}</div>
+        <div class="stat-label">Gross Revenue</div>
+      </div>
+
+      <div class="stat-card glass-panel animate-fade-in">
+        <span class="stat-icon" style="color: #a78bfa;">&#8634;</span>
+        <div class="stat-value" style="color: #a78bfa;">${{ summary.refundedAmount | number:'1.0-2' }}</div>
+        <div class="stat-label">Refunded Amount</div>
+      </div>
+
+      <div class="stat-card glass-panel animate-fade-in">
+        <span class="stat-icon" style="color: var(--accent);">&#128181;</span>
+        <div class="stat-value" style="color: var(--accent);">${{ summary.totalRevenue - summary.refundedAmount | number:'1.0-2' }}</div>
+        <div class="stat-label">Net Revenue</div>
+      </div>
+
+      <div class="stat-card glass-panel animate-fade-in">
+        <span class="stat-icon" style="color: var(--success);">&#128504;</span>
+        <div class="stat-value" style="color: var(--success);">{{ summary.confirmedBookings }}</div>
+        <div class="stat-label">Confirmed Stays</div>
+      </div>
+    </div>
+
+    <!-- Occupancy stats table -->
+    <section class="occupancy-section glass-panel">
+      <h3>Suite Occupancy Analytics</h3>
+      <p class="mb-4" style="color: var(--text-muted); font-size: 0.9rem;">Evaluates booking volumes, revenue splits, and stay occupancy rates for each suite.</p>
+
+      @if (summary.roomOccupancy.length > 0) {
+        <div class="table-wrapper animate-fade-in">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th>Suite Number</th>
+                <th>Suite Class</th>
+                <th>Total Stays</th>
+                <th>Stay Revenues</th>
+                <th>Stay Occupancy Rate</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (room of summary.roomOccupancy; track room.roomNumber) {
+                <tr>
+                  <td><strong>Suite #{{ room.roomNumber }}</strong></td>
+                  <td>{{ room.roomType }}</td>
+                  <td>{{ room.bookingCount }} stays</td>
+                  <td><strong>${{ room.revenue | number:'1.0-2' }}</strong></td>
+                  <td>
+                    <div class="occupancy-cell">
+                      <span class="occupancy-pill" [class]="getOccupancyRateClass(room.occupancyRate)">
+                        {{ room.occupancyRate * 100 | number:'1.0-1' }}%
+                      </span>
+                      <div class="occupancy-bar-bg">
+                        <div class="occupancy-bar" [class]="getOccupancyRateClass(room.occupancyRate)" [style.width.%]="room.occupancyRate * 100"></div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <div class="no-occupancy text-center py-4">
+          <p>No room stay logs logged for the filtered check dates.</p>
+        </div>
+      }
+    </section>
+  }
+</div>

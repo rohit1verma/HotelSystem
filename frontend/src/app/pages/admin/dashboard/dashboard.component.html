@@ -1,0 +1,94 @@
+<div class="admin-dashboard-wrapper animate-fade-in">
+  <!-- Top header actions -->
+  <div class="section-header d-flex justify-between align-center mb-4">
+    <div>
+      <h2>Oversight Dashboard</h2>
+      <p>Real-time occupancy indicators, revenue streams, and user lists.</p>
+    </div>
+
+    <div class="header-actions">
+      <button (click)="onExpirePendingBookings()" class="btn btn-secondary" style="border-color: var(--error); color: var(--error); padding: 0.5rem 1rem; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em;">
+        &#9888; Expire Pending Stales
+      </button>
+    </div>
+  </div>
+
+  @if (report(); as summary) {
+    <!-- KPI widgets grid -->
+    <div class="stats-grid mb-4">
+      <div class="stat-card glass-panel animate-fade-in">
+        <span class="stat-icon">&#128197;</span>
+        <div class="stat-value">{{ summary.totalBookings }}</div>
+        <div class="stat-label">Total Reservations</div>
+      </div>
+      <div class="stat-card glass-panel animate-fade-in">
+        <span class="stat-icon" style="color: var(--success);">&#128504;</span>
+        <div class="stat-value" style="color: var(--success);">{{ summary.confirmedBookings }}</div>
+        <div class="stat-label">Confirmed Stays</div>
+      </div>
+      <div class="stat-card glass-panel animate-fade-in">
+        <span class="stat-icon" style="color: var(--warning);">&#128338;</span>
+        <div class="stat-value" style="color: var(--warning);">{{ summary.pendingBookings }}</div>
+        <div class="stat-label">Pending Payments</div>
+      </div>
+      <div class="stat-card glass-panel animate-fade-in">
+        <span class="stat-icon" style="color: var(--error);">&#10007;</span>
+        <div class="stat-value" style="color: var(--error);">{{ summary.cancelledBookings }}</div>
+        <div class="stat-label">Cancelled Stays</div>
+      </div>
+      <div class="stat-card glass-panel animate-fade-in">
+        <span class="stat-icon" style="color: var(--accent);">&#128181;</span>
+        <div class="stat-value" style="color: var(--accent);">${{ summary.totalRevenue | number:'1.0-2' }}</div>
+        <div class="stat-label">Total Revenue</div>
+      </div>
+      <div class="stat-card glass-panel animate-fade-in">
+        <span class="stat-icon" style="color: #a78bfa;">&#8634;</span>
+        <div class="stat-value" style="color: #a78bfa;">${{ summary.refundedAmount | number:'1.0-2' }}</div>
+        <div class="stat-label">Refunded Cash</div>
+      </div>
+    </div>
+  }
+
+  <!-- Customers Profile Database Section -->
+  <section class="customers-section glass-panel">
+    <h3>Registered Customers Base</h3>
+    <p class="mb-4" style="color: var(--text-muted); font-size: 0.9rem;">Below is the current list of active registered client users in the system.</p>
+
+    @if (customers().length > 0) {
+      <div class="table-wrapper">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Full Name</th>
+              <th>Email Address</th>
+              <th>Phone Number</th>
+              <th>Access Role</th>
+              <th>Created On</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (user of customers(); track user.id) {
+              <tr>
+                <td><strong>#{{ user.id }}</strong></td>
+                <td>{{ user.fullName }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.phone }}</td>
+                <td>
+                  <span class="role-pill" [class.admin]="user.role === 'Admin'">
+                    {{ user.role }}
+                  </span>
+                </td>
+                <td>{{ user.createdAt | date:'mediumDate' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <div class="no-customers text-center py-4">
+        <p>No customer logs registered in the database yet.</p>
+      </div>
+    }
+  </section>
+</div>
