@@ -1,0 +1,113 @@
+<div class="search-page-wrapper">
+  <!-- Search Form modifier widget -->
+  <div class="search-top-bar glass-panel mb-4">
+    <form [formGroup]="searchForm" (ngSubmit)="executeSearch()" class="search-horizontal-form">
+      <div class="form-group search-col">
+        <label class="form-label" for="checkInDate">Check-In</label>
+        <input type="date" id="checkInDate" formControlName="checkInDate" class="form-control" [min]="minDate" />
+      </div>
+
+      <div class="form-group search-col">
+        <label class="form-label" for="checkOutDate">Check-Out</label>
+        <input type="date" id="checkOutDate" formControlName="checkOutDate" class="form-control" [min]="minDate" />
+      </div>
+
+      <div class="form-group search-col">
+        <label class="form-label" for="numberOfGuests">Guests</label>
+        <input type="number" id="numberOfGuests" formControlName="numberOfGuests" class="form-control" min="1" max="20" />
+      </div>
+
+      <button type="submit" class="btn btn-primary search-action-btn">Modify Search</button>
+    </form>
+  </div>
+
+  <div class="search-layout">
+    <!-- Filters Sidebar -->
+    <aside class="search-filters-sidebar glass-panel">
+      <h3>Refine Search</h3>
+
+      <!-- Room Type filters -->
+      <div class="filter-group">
+        <h4 class="filter-title">Room Class</h4>
+        <div class="type-buttons">
+          @for (type of roomTypes; track type) {
+            <button
+              type="button"
+              class="filter-type-btn"
+              [class.active]="selectedRoomType() === type"
+              (click)="onFilterChange(type)"
+            >
+              {{ type }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- Max Price Slider -->
+      <div class="filter-group">
+        <div class="price-header d-flex justify-between">
+          <h4 class="filter-title">Max Price</h4>
+          <span class="price-value">${{ maxPrice() }}</span>
+        </div>
+        <input
+          type="range"
+          min="1000"
+          max="30000"
+          step="500"
+          [value]="maxPrice()"
+          (input)="onPriceChange($event)"
+          class="price-slider"
+        />
+        <div class="slider-labels d-flex justify-between">
+          <span>$1,000</span>
+          <span>$30,000</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Room Results Grid -->
+    <main class="rooms-catalog">
+      @if (filteredRooms().length > 0) {
+        <div class="card-grid animate-fade-in" style="margin-top: 0;">
+          @for (room of filteredRooms(); track room.roomId) {
+            <article class="room-card animate-fade-in">
+              <img [src]="room.imageUrl || 'hotel_hero.png'" [alt]="room.roomType" class="room-card-image" />
+              <div class="room-card-content">
+                <div class="d-flex justify-between align-center mb-4">
+                  <h3 class="room-card-title">{{ room.roomType }} - Suite {{ room.roomNumber }}</h3>
+                  <span class="badge badge-success">Available</span>
+                </div>
+
+                <p class="room-card-description">{{ room.description || 'Enjoy complete luxury in our custom-designed signature accommodation.' }}</p>
+
+                <!-- Dynamic amenities pills -->
+                <div class="room-amenities-wrap mb-4">
+                  @for (amenity of splitAmenities(room.amenities); track amenity) {
+                    <span class="amenity-pill">{{ amenity }}</span>
+                  }
+                </div>
+
+                <!-- Price and stay totals summary -->
+                <div class="room-card-footer">
+                  <div class="room-price-info">
+                    <span class="price-amount">${{ room.pricePerNight }}</span>
+                    <span class="price-period">/ night</span>
+                    <div class="stay-total">Stay Total: <strong>${{ room.totalPrice }}</strong> ({{ room.numberOfNights }} nights)</div>
+                  </div>
+                  <button (click)="viewDetails(room.roomId)" class="btn btn-primary btn-view">View Details</button>
+                </div>
+              </div>
+            </article>
+          }
+        </div>
+      } @else {
+        <!-- Empty Results panel -->
+        <div class="no-rooms-panel glass-panel text-center animate-fade-in">
+          <div class="no-rooms-icon">&#128719;</div>
+          <h3>No Suites Found</h3>
+          <p>We couldn't find any available suites matching your criteria. Try adjusting your filter parameters or check-in dates.</p>
+        </div>
+      }
+    </main>
+  </div>
+</div>

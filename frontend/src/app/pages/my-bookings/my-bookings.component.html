@@ -1,0 +1,63 @@
+<div class="my-bookings-wrapper animate-fade-in">
+  <div class="section-header d-flex justify-between align-center mb-4">
+    <div>
+      <h2>My Stay Bookings</h2>
+      <p>Manage your reservations, complete pending checkouts, or review stays.</p>
+    </div>
+    <a routerLink="/search" class="btn btn-primary">Book New Room</a>
+  </div>
+
+  @if (bookings().length > 0) {
+    <div class="bookings-grid">
+      @for (booking of bookings(); track booking.id) {
+        <article class="booking-history-card glass-panel animate-fade-in">
+          <!-- Reference and Status Header -->
+          <div class="booking-card-header d-flex justify-between align-center mb-4">
+            <span class="booking-ref">{{ booking.bookingReference }}</span>
+            <span class="badge" [class]="'badge-' + booking.status.toLowerCase()">
+              {{ booking.status }}
+            </span>
+          </div>
+
+          <!-- Suite Details Body -->
+          <div class="booking-card-body mb-4">
+            <h3 class="room-title">{{ booking.roomType }} Suite (Suite {{ booking.roomNumber }})</h3>
+            <p class="dates-range">
+              &#128197; <strong>Check-In:</strong> {{ booking.checkInDate | date:'mediumDate' }}
+            </p>
+            <p class="dates-range">
+              &#128197; <strong>Check-Out:</strong> {{ booking.checkOutDate | date:'mediumDate' }}
+            </p>
+            <p class="guests-volume">&#128101; <strong>Guests:</strong> {{ booking.numberOfGuests }}</p>
+            <p class="stay-cost">&#128181; <strong>Stay Total:</strong> ${{ booking.totalAmount }} ({{ booking.numberOfNights }} nights)</p>
+          </div>
+
+          <!-- Payment status & specific actions footer -->
+          <div class="booking-card-footer d-flex justify-between align-center border-top">
+            <div class="payment-status">
+              <small>Payment Status:</small>
+              <span class="payment-badge" [class]="booking.paymentStatus?.toLowerCase() === 'success' ? 'paid' : 'unpaid'">
+                {{ booking.paymentStatus || 'Pending' }}
+              </span>
+            </div>
+
+            <div class="booking-actions">
+              @if (booking.status === 'Pending' && (!booking.paymentStatus || booking.paymentStatus === 'Pending')) {
+                <a [routerLink]="['/payment', booking.id]" class="btn btn-primary btn-pay-now">Pay Now</a>
+              }
+              <a [routerLink]="['/booking', booking.id]" class="btn btn-secondary btn-details">Details</a>
+            </div>
+          </div>
+        </article>
+      }
+    </div>
+  } @else {
+    <!-- Empty State -->
+    <div class="empty-bookings glass-panel text-center animate-fade-in">
+      <div class="empty-icon">&#128197;</div>
+      <h3>No Active Reservations</h3>
+      <p class="mb-4">You have not initialized any hotel bookings yet. Choose from our luxury suites catalog to begin.</p>
+      <a routerLink="/search" class="btn btn-primary">Search Luxury Suites</a>
+    </div>
+  }
+</div>

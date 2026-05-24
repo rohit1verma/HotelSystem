@@ -1,0 +1,126 @@
+@if (room(); as currentRoom) {
+  <div class="booking-form-wrapper">
+    <!-- Back to details link -->
+    <div class="back-link-container mb-4">
+      <a [routerLink]="['/room', currentRoom.id]" [queryParams]="{ checkInDate: bookingForm.get('checkInDate')?.value, checkOutDate: bookingForm.get('checkOutDate')?.value, numberOfGuests: bookingForm.get('numberOfGuests')?.value }" class="btn-back">
+        &larr; Back to Suite Details
+      </a>
+    </div>
+
+    <div class="booking-layout">
+      <!-- Main Reservation Form -->
+      <div class="booking-main glass-panel">
+        <h2>Confirm Your Booking</h2>
+        <p class="mb-4">Provide details below to finalize your luxury reservation.</p>
+
+        <form [formGroup]="bookingForm" (ngSubmit)="onSubmit()" class="booking-reactive-form">
+
+          <div class="form-row">
+            <!-- Check In Date -->
+            <div class="form-group">
+              <label for="checkInDate" class="form-label">Check-In Date</label>
+              <input
+                type="date"
+                id="checkInDate"
+                formControlName="checkInDate"
+                class="form-control"
+                [class.input-error]="bookingForm.get('checkInDate')?.touched && bookingForm.get('checkInDate')?.invalid"
+              />
+              @if (bookingForm.get('checkInDate')?.touched && bookingForm.get('checkInDate')?.invalid) {
+                <span class="field-error animate-fade-in">Check-in date is required.</span>
+              }
+            </div>
+
+            <!-- Check Out Date -->
+            <div class="form-group">
+              <label for="checkOutDate" class="form-label">Check-Out Date</label>
+              <input
+                type="date"
+                id="checkOutDate"
+                formControlName="checkOutDate"
+                class="form-control"
+                [class.input-error]="bookingForm.get('checkOutDate')?.touched && bookingForm.get('checkOutDate')?.invalid"
+              />
+              @if (bookingForm.get('checkOutDate')?.touched && bookingForm.get('checkOutDate')?.invalid) {
+                <span class="field-error animate-fade-in">Check-out date is required.</span>
+              }
+            </div>
+          </div>
+
+          <!-- Number of Guests -->
+          <div class="form-group">
+            <label for="numberOfGuests" class="form-label">Number of Guests</label>
+            <input
+              type="number"
+              id="numberOfGuests"
+              formControlName="numberOfGuests"
+              class="form-control"
+              min="1"
+              [max]="currentRoom.maxGuests"
+              [class.input-error]="bookingForm.get('numberOfGuests')?.touched && bookingForm.get('numberOfGuests')?.invalid"
+            />
+            @if (bookingForm.get('numberOfGuests')?.touched && bookingForm.get('numberOfGuests')?.invalid) {
+              <span class="field-error animate-fade-in">
+                @if (bookingForm.get('numberOfGuests')?.hasError('required')) { Guest volume is required. }
+                @else if (bookingForm.get('numberOfGuests')?.hasError('max')) { Suite capacity restricted to maximum of {{ currentRoom.maxGuests }} guests. }
+              </span>
+            }
+          </div>
+
+          <!-- Special Requests -->
+          <div class="form-group">
+            <label for="specialRequests" class="form-label">Special Requests (Optional)</label>
+            <textarea
+              id="specialRequests"
+              formControlName="specialRequests"
+              rows="4"
+              class="form-control"
+              placeholder="e.g. Dietary requirements, late check-in request, airport pickup arrangements..."
+              [class.input-error]="bookingForm.get('specialRequests')?.touched && bookingForm.get('specialRequests')?.invalid"
+            ></textarea>
+            @if (bookingForm.get('specialRequests')?.touched && bookingForm.get('specialRequests')?.invalid) {
+              <span class="field-error animate-fade-in">Special requests cannot exceed 500 characters.</span>
+            }
+          </div>
+
+          <!-- Submit Action -->
+          <button type="submit" class="btn btn-primary btn-submit-booking">Initialize Reservation</button>
+        </form>
+      </div>
+
+      <!-- Suite Specifications Sidebar -->
+      <aside class="booking-sidebar glass-panel">
+        <h3>Stay Specifications</h3>
+
+        <div class="suite-preview mb-4">
+          <img [src]="currentRoom.imageUrl || 'hotel_hero.png'" [alt]="currentRoom.roomType" class="suite-preview-image" />
+          <h4 class="mt-4">{{ currentRoom.roomType }} Suite</h4>
+          <p class="capacity-desc">Suite #{{ currentRoom.roomNumber }}</p>
+        </div>
+
+        <div class="stay-summary-box mb-4">
+          <div class="summary-box-row">
+            <span class="box-label">Price per night</span>
+            <span class="box-val">${{ currentRoom.pricePerNight }}</span>
+          </div>
+          <div class="summary-box-row">
+            <span class="box-label">Stay length</span>
+            <span class="box-val">{{ numberOfNights() }} nights</span>
+          </div>
+          <div class="summary-box-row border-top">
+            <span class="box-label total-label">Estimated Total</span>
+            <span class="box-val total-val">${{ totalPrice() }}</span>
+          </div>
+        </div>
+
+        <div class="booking-policies-panel">
+          <h5>Booking Policy</h5>
+          <ul>
+            <li>Pending reservations expire automatically if unpaid.</li>
+            <li>Free cancellation up to 24 hours prior to check-in.</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </div>
+}

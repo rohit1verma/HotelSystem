@@ -1,0 +1,186 @@
+<div class="admin-rooms-wrapper animate-fade-in">
+  <div class="section-header d-flex justify-between align-center mb-4">
+    <div>
+      <h2>Manage Rooms Inventory</h2>
+      <p>Configure suite properties, pricing, occupancy counts, and dynamic imagery.</p>
+    </div>
+    <button (click)="openAddDrawer()" class="btn btn-primary">Add New Room</button>
+  </div>
+
+  <!-- Master Rooms Table -->
+  <section class="rooms-table-section glass-panel">
+    @if (rooms().length > 0) {
+      <div class="table-wrapper animate-fade-in">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Room #</th>
+              <th>Suite Class</th>
+              <th>Price per Night</th>
+              <th>Max Guests</th>
+              <th>Amenities</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (room of rooms(); track room.id) {
+              <tr>
+                <td><strong>#{{ room.roomNumber }}</strong></td>
+                <td>{{ room.roomType }}</td>
+                <td><strong>${{ room.pricePerNight }}</strong></td>
+                <td>{{ room.maxGuests }} guests</td>
+                <td class="amenities-cell">
+                  <div class="amenity-inline-wrap">
+                    @for (amenity of room.amenities.split(','); track amenity) {
+                      <span class="inline-pill">{{ amenity.trim() }}</span>
+                    }
+                  </div>
+                </td>
+                <td>
+                  <span class="status-badge" [class.active]="room.isActive">
+                    {{ room.isActive ? 'Active' : 'Inactive' }}
+                  </span>
+                </td>
+                <td>
+                  <div class="action-buttons-wrap">
+                    <button (click)="openEditDrawer(room)" class="btn btn-secondary btn-edit-icon">&#9998; Edit</button>
+                    <button (click)="onDeleteRoom(room.id)" class="btn btn-danger btn-delete-icon">&#10007; Delete</button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <div class="no-rooms text-center py-4">
+        <p>No suites registered in the catalog yet.</p>
+      </div>
+    }
+  </section>
+
+  <!-- Sliding Drawer Form Overlay -->
+  @if (showDrawer()) {
+    <div class="drawer-overlay" (click)="closeDrawer()">
+      <div class="drawer-panel" (click)="$event.stopPropagation()">
+        <div class="drawer-header d-flex justify-between align-center mb-4">
+          <h3>{{ isEditMode() ? 'Edit Suite Specifications' : 'Add New Suite' }}</h3>
+          <button (click)="closeDrawer()" class="btn-close-drawer">&times;</button>
+        </div>
+
+        <form [formGroup]="roomForm" (ngSubmit)="onSubmit()" class="drawer-form">
+          <div class="form-group">
+            <label for="roomNumber" class="form-label">Room Number</label>
+            <input
+              type="text"
+              id="roomNumber"
+              formControlName="roomNumber"
+              class="form-control"
+              placeholder="e.g. 101"
+              [class.input-error]="roomForm.get('roomNumber')?.touched && roomForm.get('roomNumber')?.invalid"
+            />
+            @if (roomForm.get('roomNumber')?.touched && roomForm.get('roomNumber')?.invalid) {
+              <span class="field-error animate-fade-in">Room number is required (max 10 characters).</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="roomType" class="form-label">Room Type</label>
+            <input
+              type="text"
+              id="roomType"
+              formControlName="roomType"
+              class="form-control"
+              placeholder="e.g. Deluxe, Executive Suite"
+              [class.input-error]="roomForm.get('roomType')?.touched && roomForm.get('roomType')?.invalid"
+            />
+            @if (roomForm.get('roomType')?.touched && roomForm.get('roomType')?.invalid) {
+              <span class="field-error animate-fade-in">Room type is required (max 50 characters).</span>
+            }
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="pricePerNight" class="form-label">Price per night</label>
+              <input
+                type="number"
+                id="pricePerNight"
+                formControlName="pricePerNight"
+                class="form-control"
+                [class.input-error]="roomForm.get('pricePerNight')?.touched && roomForm.get('pricePerNight')?.invalid"
+              />
+              @if (roomForm.get('pricePerNight')?.touched && roomForm.get('pricePerNight')?.invalid) {
+                <span class="field-error animate-fade-in">Price per night is required (min 1).</span>
+              }
+            </div>
+
+            <div class="form-group">
+              <label for="maxGuests" class="form-label">Max guests</label>
+              <input
+                type="number"
+                id="maxGuests"
+                formControlName="maxGuests"
+                class="form-control"
+                [class.input-error]="roomForm.get('maxGuests')?.touched && roomForm.get('maxGuests')?.invalid"
+              />
+              @if (roomForm.get('maxGuests')?.touched && roomForm.get('maxGuests')?.invalid) {
+                <span class="field-error animate-fade-in">Max guests required (min 1, max 20).</span>
+              }
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="description" class="form-label">Description</label>
+            <textarea
+              id="description"
+              formControlName="description"
+              rows="3"
+              class="form-control"
+              placeholder="Suite descriptions..."
+              [class.input-error]="roomForm.get('description')?.touched && roomForm.get('description')?.invalid"
+            ></textarea>
+            @if (roomForm.get('description')?.touched && roomForm.get('description')?.invalid) {
+              <span class="field-error animate-fade-in">Description cannot exceed 500 characters.</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="amenities" class="form-label">Premium Amenities (Comma-separated)</label>
+            <input
+              type="text"
+              id="amenities"
+              formControlName="amenities"
+              class="form-control"
+              placeholder="Mini Bar, Free WiFi, Horizon View, Air Conditioning"
+              [class.input-error]="roomForm.get('amenities')?.touched && roomForm.get('amenities')?.invalid"
+            />
+            @if (roomForm.get('amenities')?.touched && roomForm.get('amenities')?.invalid) {
+              <span class="field-error animate-fade-in">Amenities lists is required.</span>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="imageUrl" class="form-label">Image URL</label>
+            <input
+              type="text"
+              id="imageUrl"
+              formControlName="imageUrl"
+              class="form-control"
+              placeholder="e.g. hotel_hero.png"
+            />
+          </div>
+
+          @if (isEditMode()) {
+            <div class="form-group d-flex align-center gap-2 mb-4">
+              <input type="checkbox" id="isActive" formControlName="isActive" style="width: 18px; height: 18px; cursor: pointer;" />
+              <label for="isActive" class="form-label" style="margin-bottom: 0; cursor: pointer;">Suite Active in Listings</label>
+            </div>
+          }
+
+          <button type="submit" class="btn btn-primary btn-submit-drawer">{{ isEditMode() ? 'Update Specifications' : 'Add Suite to Inventory' }}</button>
+        </form>
+      </div>
+    </div>
+  }
+</div>

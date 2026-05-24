@@ -1,0 +1,112 @@
+.confirmation-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 190px);
+  padding: 2rem 0;
+}
+
+.confirmation-container {
+  width: 100%;
+  max-width: 540px;
+}
+
+.confirmation-container h2 {
+  font-size: 2.25rem;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(135deg, #fff 0%, var(--text-muted) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.confirmation-container p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.success-icon-wrap {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  background-color: var(--success-glow);
+  border: 2px solid var(--success);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 2rem;
+}
+
+.success-check {
+  font-size: 2.5rem;
+  color: var(--success);
+  font-weight: bold;
+}
+
+.success-pulse {
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  width: 80px;
+  height: 80px;
+  border: 2px solid var(--success);
+  border-radius: 50%;
+  animation: pulseSuccess 2s infinite ease-out;
+  opacity: 0;
+}
+
+@keyframes pulseSuccess {
+  0% { transform: scale(1); opacity: 0.5; }
+  100% { transform: scale(1.4); opacity: 0; }
+}
+
+.reference-card {
+  background-color: rgba(7, 10, 19, 0.45);
+  border: 1px solid var(--border-glow);
+  border-radius: var(--radius-sm);
+  padding: 1.25rem;
+  max-width: 320px;
+  margin: 0 auto 1.5rem;
+}
+
+.reference-card small {
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 0.25rem;
+}
+
+.reference-card h3 {
+  font-size: 1.5rem;
+  color: var(--accent);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-shadow: 0 0 10px var(--accent-glow);
+}
+
+.confirmation-info-panel {
+  border-top: 1px solid var(--border-glow);
+  border-bottom: 1px solid var(--border-glow);
+  padding: 1.5rem 0;
+}
+
+.confirmation-info-panel p {
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.confirmation-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.confirmation-actions .btn {
+  min-width: 180px;
+  padding: 0.8rem 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}

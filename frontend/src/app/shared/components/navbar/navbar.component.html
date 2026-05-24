@@ -1,0 +1,41 @@
+<header class="navbar-header">
+  <div class="navbar-container">
+    <a routerLink="/" class="navbar-logo">
+      <span class="logo-accent">Aetheris</span>Grand
+    </a>
+
+    <nav class="navbar-links">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
+      <a routerLink="/search" routerLinkActive="active">Search Rooms</a>
+
+      @if (authService.isAuthenticated()) {
+        @if (!authService.isAdmin()) {
+          <a routerLink="/my-bookings" routerLinkActive="active">My Bookings</a>
+        } @else {
+          <!-- Admin Dashboard Links -->
+          <a routerLink="/admin" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Dashboard</a>
+          <a routerLink="/admin/rooms" routerLinkActive="active">Manage Rooms</a>
+          <a routerLink="/admin/bookings" routerLinkActive="active">Manage Bookings</a>
+          <a routerLink="/admin/reports" routerLinkActive="active">Reports</a>
+        }
+      }
+    </nav>
+
+    <div class="navbar-actions">
+      @if (authService.currentUser(); as user) {
+        <div class="user-profile">
+          <div class="user-info">
+            <span class="user-name">{{ user.fullName }}</span>
+            <span class="user-role-badge" [class.admin]="user.role === 'Admin'">{{ user.role }}</span>
+          </div>
+          <button (click)="logout()" class="btn-logout">Logout</button>
+        </div>
+      } @else {
+        <div class="auth-buttons">
+          <a routerLink="/login" class="nav-auth-link">Login</a>
+          <a routerLink="/register" class="btn btn-primary nav-register-btn">Register</a>
+        </div>
+      }
+    </div>
+  </div>
+</header>

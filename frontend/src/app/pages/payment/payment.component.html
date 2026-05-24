@@ -1,0 +1,201 @@
+@if (booking(); as currentBooking) {
+  <div class="payment-page-wrapper animate-fade-in">
+    <div class="payment-layout">
+      <!-- Main Payment Processing Form -->
+      <div class="payment-main glass-panel">
+        <h2>Secure Payment Gateway</h2>
+        <p class="mb-4">Select your preferred payment gateway method below to finalize your booking.</p>
+
+        <!-- Method selection pills -->
+        <div class="method-tabs mb-4">
+          <button type="button" class="tab-btn" [class.active]="selectedMethod() === 'CreditCard'" (click)="setPaymentMethod('CreditCard')">&#128179; Credit / Debit Card</button>
+          <button type="button" class="tab-btn" [class.active]="selectedMethod() === 'UPI'" (click)="setPaymentMethod('UPI')">&#128241; UPI Transfer</button>
+          <button type="button" class="tab-btn" [class.active]="selectedMethod() === 'NetBanking'" (click)="setPaymentMethod('NetBanking')">&#127974; Net Banking</button>
+        </div>
+
+        <form [formGroup]="paymentForm" (ngSubmit)="onSubmit()" class="payment-form">
+          @if (selectedMethod() === 'CreditCard') {
+            <!-- Credit Card Fields -->
+            <div class="credit-card-fields animate-fade-in">
+              <!-- Visual Card Preview -->
+              <div class="card-preview" [class.flipped]="isFlipped()">
+                <div class="card-preview-inner">
+                  <!-- Front Side of Card -->
+                  <div class="card-preview-front">
+                    <div class="d-flex justify-between align-center">
+                      <span style="font-family: var(--font-heading); font-weight: 800; font-style: italic; font-size: 1.2rem; letter-spacing: 0.1em;">AETHERIS</span>
+                      <span style="font-size: 1.5rem;">&#128179;</span>
+                    </div>
+                    <div class="card-number-display">{{ cardNumberFormatted() }}</div>
+                    <div class="d-flex justify-between align-center">
+                      <div class="card-holder-display">
+                        <small style="font-size: 0.6rem; text-transform: uppercase; color: rgba(255, 255, 255, 0.55); display: block; letter-spacing: 0.05em; margin-bottom: 0.2rem;">Card Holder</small>
+                        {{ cardHolderFormatted() }}
+                      </div>
+                      <div class="card-expiry-display">
+                        <small style="font-size: 0.6rem; text-transform: uppercase; color: rgba(255, 255, 255, 0.55); display: block; letter-spacing: 0.05em; margin-bottom: 0.2rem;">Expires</small>
+                        {{ cardExpiryFormatted() }}
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Back Side of Card -->
+                  <div class="card-preview-back">
+                    <div class="card-stripe"></div>
+                    <div class="cvc-stripe d-flex justify-between align-center">
+                      <div class="signature-line"></div>
+                      <div class="cvc-box">{{ cardCvcFormatted() }}</div>
+                    </div>
+                    <div style="font-size: 0.55rem; text-align: center; color: rgba(255, 255, 255, 0.35); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">Authorized Signature</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Input Forms -->
+              <div class="form-group">
+                <label for="cardNumber" class="form-label">Card Number</label>
+                <input
+                  type="text"
+                  id="cardNumber"
+                  formControlName="cardNumber"
+                  class="form-control"
+                  placeholder="e.g. 4111222233334444"
+                  maxlength="16"
+                  [class.input-error]="paymentForm.get('cardNumber')?.touched && paymentForm.get('cardNumber')?.invalid"
+                />
+                @if (paymentForm.get('cardNumber')?.touched && paymentForm.get('cardNumber')?.invalid) {
+                  <span class="field-error animate-fade-in">Please enter a valid 16-digit card number.</span>
+                }
+              </div>
+
+              <div class="form-group">
+                <label for="cardHolder" class="form-label">Cardholder Name</label>
+                <input
+                  type="text"
+                  id="cardHolder"
+                  formControlName="cardHolder"
+                  class="form-control"
+                  placeholder="e.g. JOHN SMITH"
+                  [class.input-error]="paymentForm.get('cardHolder')?.touched && paymentForm.get('cardHolder')?.invalid"
+                />
+                @if (paymentForm.get('cardHolder')?.touched && paymentForm.get('cardHolder')?.invalid) {
+                  <span class="field-error animate-fade-in">Cardholder name is required.</span>
+                }
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="expiry" class="form-label">Expiration Date</label>
+                  <input
+                    type="text"
+                    id="expiry"
+                    formControlName="expiry"
+                    class="form-control"
+                    placeholder="MM/YY"
+                    maxlength="5"
+                    [class.input-error]="paymentForm.get('expiry')?.touched && paymentForm.get('expiry')?.invalid"
+                  />
+                  @if (paymentForm.get('expiry')?.touched && paymentForm.get('expiry')?.invalid) {
+                    <span class="field-error animate-fade-in">Expiry required (MM/YY format).</span>
+                  }
+                </div>
+
+                <div class="form-group">
+                  <label for="cvc" class="form-label">CVC / CVV</label>
+                  <input
+                    type="text"
+                    id="cvc"
+                    formControlName="cvc"
+                    class="form-control"
+                    placeholder="123"
+                    maxlength="3"
+                    (focus)="onFocusCvc()"
+                    (blur)="onBlurCvc()"
+                    [class.input-error]="paymentForm.get('cvc')?.touched && paymentForm.get('cvc')?.invalid"
+                  />
+                  @if (paymentForm.get('cvc')?.touched && paymentForm.get('cvc')?.invalid) {
+                    <span class="field-error animate-fade-in">CVV must be exactly 3 digits.</span>
+                  }
+                </div>
+              </div>
+            </div>
+          } @else if (selectedMethod() === 'UPI') {
+            <!-- UPI Fields -->
+            <div class="upi-fields animate-fade-in text-center py-4">
+              <span class="upi-logo">&#128241;</span>
+              <h3>Scan QR Code or Use VPA</h3>
+              <p class="mb-4">Open your mobile UPI application (e.g., GPay, PhonePe, BHIM) and scan the secure code to verify your transaction request.</p>
+
+              <div class="mock-qr-code mb-4">
+                <span class="qr-symbol">&#9638;</span>
+                <div class="qr-scanner-glow"></div>
+              </div>
+
+              <div class="form-group text-left" style="max-width: 320px; margin: 0 auto 1.5rem;">
+                <label for="upiId" class="form-label text-center">Or enter VPA Address</label>
+                <input type="text" id="upiId" class="form-control text-center" placeholder="customer@upi" />
+              </div>
+            </div>
+          } @else if (selectedMethod() === 'NetBanking') {
+            <!-- NetBanking Fields -->
+            <div class="netbanking-fields animate-fade-in text-center py-4">
+              <span class="bank-logo">&#127974;</span>
+              <h3>Select Net Banking Partner</h3>
+              <p class="mb-4">Select your banking partner below. You will be securely redirected to initiate the transaction.</p>
+
+              <div class="bank-grid">
+                <button type="button" class="bank-card">Chase</button>
+                <button type="button" class="bank-card">Bank of America</button>
+                <button type="button" class="bank-card">Wells Fargo</button>
+                <button type="button" class="bank-card">Citi Bank</button>
+              </div>
+            </div>
+          }
+
+          <button type="submit" class="btn btn-primary btn-submit-payment">Pay ${{ currentBooking.totalAmount }} Securely</button>
+        </form>
+      </div>
+
+      <!-- Stay Bill Invoice details -->
+      <aside class="payment-sidebar glass-panel">
+        <h3>Stay Invoice Details</h3>
+
+        <div class="bill-summary-box mb-4">
+          <div class="bill-row">
+            <span class="bill-label">Booking Reference</span>
+            <span class="bill-val font-heading">{{ currentBooking.bookingReference }}</span>
+          </div>
+          <div class="bill-row">
+            <span class="bill-label">Suite Type</span>
+            <span class="bill-val">{{ currentBooking.roomType }} Suite</span>
+          </div>
+          <div class="bill-row">
+            <span class="bill-label">Suite Number</span>
+            <span class="bill-val">Suite {{ currentBooking.roomNumber }}</span>
+          </div>
+          <div class="bill-row">
+            <span class="bill-label">Check-In</span>
+            <span class="bill-val">{{ currentBooking.checkInDate | date:'mediumDate' }}</span>
+          </div>
+          <div class="bill-row">
+            <span class="bill-label">Check-Out</span>
+            <span class="bill-val">{{ currentBooking.checkOutDate | date:'mediumDate' }}</span>
+          </div>
+          <div class="bill-row border-top">
+            <span class="bill-label">Stay Length</span>
+            <span class="bill-val">{{ currentBooking.numberOfNights }} nights</span>
+          </div>
+          <div class="bill-row border-top">
+            <span class="bill-label total-label">Grand Total</span>
+            <span class="bill-val total-val">${{ currentBooking.totalAmount }}</span>
+          </div>
+        </div>
+
+        <div class="security-trust-badge text-center">
+          <span class="badge-lock">&#128274;</span>
+          <h5>256-Bit SSL Encrypted</h5>
+          <p>Your payment session is fully encrypted and secured. We do not store full card digits on our host server.</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+}

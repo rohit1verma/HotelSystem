@@ -1,0 +1,28 @@
+<div class="confirmation-wrapper animate-fade-in">
+  <div class="confirmation-container glass-panel text-center">
+    <!-- Success Icon Circle -->
+    <div class="success-icon-wrap">
+      <span class="success-check">&#10003;</span>
+      <div class="success-pulse"></div>
+    </div>
+
+    <h2>Reservation Confirmed</h2>
+    <p class="mb-4">Thank you for choosing Aetheris. Your luxury suite reservation is officially confirmed.</p>
+
+    <!-- Reference Code Badge -->
+    <div class="reference-card mb-4">
+      <small>Booking Reference Code</small>
+      <h3>{{ bookingReference() }}</h3>
+    </div>
+
+    <div class="confirmation-info-panel mb-4">
+      <p>We have dispatched a comprehensive confirmation email containing your check-in instructions, receipt details, and suite parameters. Please present this reference code during check-in.</p>
+    </div>
+
+    <!-- Action links -->
+    <div class="confirmation-actions">
+      <a routerLink="/my-bookings" class="btn btn-primary">View My Bookings</a>
+      <a routerLink="/" class="btn btn-secondary">Return Home</a>
+    </div>
+  </div>
+</div>
