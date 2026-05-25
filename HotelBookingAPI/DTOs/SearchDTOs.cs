@@ -14,6 +14,10 @@ public class RoomSearchDto
     [Range(1, 20)]
     public int NumberOfGuests { get; set; }
 
+    [Required]
+    [Range(1, 100)]
+    public int NumberOfRooms { get; set; } = 1;
+
     public string? RoomType { get; set; }
     public decimal? MaxPricePerNight { get; set; }
 }
@@ -21,7 +25,7 @@ public class RoomSearchDto
 public class AvailableRoomDto
 {
     public int RoomId { get; set; }
-    public string RoomNumber { get; set; } = string.Empty;
+    public int AvailableRooms { get; set; }
     public string RoomType { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public decimal PricePerNight { get; set; }

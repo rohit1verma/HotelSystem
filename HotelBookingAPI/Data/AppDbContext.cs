@@ -11,6 +11,7 @@ public class AppDbContext : DbContext
     public DbSet<Customer> Customers => Set<Customer>();
     public DbSet<Booking> Bookings => Set<Booking>();
     public DbSet<Payment> Payments => Set<Payment>();
+    public DbSet<DailyRoomBooking> DailyRoomBookings => Set<DailyRoomBooking>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -20,10 +21,20 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Room>(e =>
         {
             e.HasKey(r => r.Id);
-            e.Property(r => r.RoomNumber).IsRequired().HasMaxLength(10);
             e.Property(r => r.RoomType).IsRequired().HasMaxLength(50);
             e.Property(r => r.PricePerNight).HasColumnType("decimal(18,2)");
-            e.HasIndex(r => r.RoomNumber).IsUnique();
+        });
+
+        // ── DailyRoomBooking ──────────────────────────────────────────────────
+        modelBuilder.Entity<DailyRoomBooking>(e =>
+        {
+            e.HasKey(d => d.Id);
+            e.HasIndex(d => new { d.RoomId, d.Date }).IsUnique();
+            
+            e.HasOne(d => d.Room)
+             .WithMany(r => r.DailyBookings)
+             .HasForeignKey(d => d.RoomId)
+             .OnDelete(DeleteBehavior.Cascade);
         });
 
         // ── Customer ──────────────────────────────────────────────────────────
@@ -86,7 +97,7 @@ public class AppDbContext : DbContext
             new Room
             {
                 Id = 1,
-                RoomNumber = "101",
+                TotalRooms = 10,
                 RoomType = "Single",
                 Description = "Cozy single room",
                 PricePerNight = 1500,
@@ -100,7 +111,7 @@ public class AppDbContext : DbContext
             new Room
             {
                 Id = 2,
-                RoomNumber = "201",
+                TotalRooms = 5,
                 RoomType = "Double",
                 Description = "Spacious double room",
                 PricePerNight = 2500,
@@ -114,7 +125,7 @@ public class AppDbContext : DbContext
             new Room
             {
                 Id = 3,
-                RoomNumber = "301",
+                TotalRooms = 2,
                 RoomType = "Suite",
                 Description = "Luxury suite with ocean view",
                 PricePerNight = 6000,

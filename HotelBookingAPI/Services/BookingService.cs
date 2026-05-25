@@ -17,11 +17,13 @@ public class BookingService : IBookingService
 {
     private readonly AppDbContext _db;
     private readonly BookingSettings _settings;
+    private readonly IEmailService _emailService;
 
-    public BookingService(AppDbContext db, IOptions<BookingSettings> settings)
+    public BookingService(AppDbContext db, IOptions<BookingSettings> settings, IEmailService emailService)
     {
         _db = db;
         _settings = settings.Value;
+        _emailService = emailService;
     }
 
     public async Task<BookingResponseDto> CreateBookingAsync(int customerId, CreateBookingDto dto)
@@ -32,33 +34,54 @@ public class BookingService : IBookingService
         if (dto.CheckInDate.Date < DateTime.UtcNow.Date)
             throw new ArgumentException("Check-in date cannot be in the past.");
 
+        if (dto.Quantity < 1)
+            throw new ArgumentException("Must book at least one room.");
+
+        using var tx = await _db.Database.BeginTransactionAsync();
+
         var room = await _db.Rooms.FindAsync(dto.RoomId)
             ?? throw new KeyNotFoundException("Room not found.");
 
         if (!room.IsActive)
             throw new InvalidOperationException("Room is not available.");
 
-        if (room.MaxGuests < dto.NumberOfGuests)
-            throw new InvalidOperationException($"Room supports max {room.MaxGuests} guests.");
+        if (room.MaxGuests * dto.Quantity < dto.NumberOfGuests)
+            throw new InvalidOperationException($"Rooms support max {room.MaxGuests * dto.Quantity} guests total.");
 
-        // Check availability
-        bool isConflict = await _db.Bookings.AnyAsync(b =>
-            b.RoomId == dto.RoomId &&
-            b.Status != BookingStatus.Cancelled &&
-            b.CheckInDate < dto.CheckOutDate &&
-            b.CheckOutDate > dto.CheckInDate);
-
-        if (isConflict)
-            throw new InvalidOperationException("Room is not available for the selected dates.");
+        var dailyBookings = await _db.DailyRoomBookings
+            .Where(d => d.RoomId == room.Id && d.Date >= dto.CheckInDate && d.Date < dto.CheckOutDate)
+            .ToListAsync();
 
         int nights = (int)(dto.CheckOutDate - dto.CheckInDate).TotalDays;
-        decimal total = room.PricePerNight * nights;
+
+        for (int i = 0; i < nights; i++)
+        {
+            var date = dto.CheckInDate.AddDays(i);
+            var daily = dailyBookings.FirstOrDefault(d => d.Date == date);
+            if (daily == null)
+            {
+                if (dto.Quantity > room.TotalRooms)
+                    throw new InvalidOperationException("Not enough rooms available for the selected dates.");
+                
+                _db.DailyRoomBookings.Add(new DailyRoomBooking { RoomId = room.Id, Date = date, BookedQuantity = dto.Quantity });
+            }
+            else
+            {
+                if (daily.BookedQuantity + dto.Quantity > room.TotalRooms)
+                    throw new InvalidOperationException("Not enough rooms available for the selected dates.");
+                
+                daily.BookedQuantity += dto.Quantity;
+            }
+        }
+
+        decimal total = room.PricePerNight * nights * dto.Quantity;
 
         var booking = new Booking
         {
             BookingReference = GenerateReference(),
             CustomerId = customerId,
             RoomId = dto.RoomId,
+            Quantity = dto.Quantity,
             CheckInDate = dto.CheckInDate,
             CheckOutDate = dto.CheckOutDate,
             NumberOfGuests = dto.NumberOfGuests,
@@ -70,6 +93,13 @@ public class BookingService : IBookingService
 
         _db.Bookings.Add(booking);
         await _db.SaveChangesAsync();
+        await tx.CommitAsync();
+
+        var customer = await _db.Customers.FindAsync(customerId);
+        if (customer != null)
+        {
+            await _emailService.SendEmailAsync(customer.Email, "Booking Created", $"Your booking {booking.BookingReference} is pending. Please complete payment.");
+        }
 
         return await BuildResponseDto(booking);
     }
@@ -157,6 +187,16 @@ public class BookingService : IBookingService
             b.Status = BookingStatus.Cancelled;
             b.CancelledAt = DateTime.UtcNow;
             b.CancellationReason = "Auto-cancelled: payment not completed in time.";
+            
+            var dailyBookings = await _db.DailyRoomBookings
+                .Where(d => d.RoomId == b.RoomId && d.Date >= b.CheckInDate && d.Date < b.CheckOutDate)
+                .ToListAsync();
+            
+            foreach (var daily in dailyBookings)
+            {
+                daily.BookedQuantity -= b.Quantity;
+                if (daily.BookedQuantity < 0) daily.BookedQuantity = 0;
+            }
         }
 
         if (stale.Count > 0)
@@ -184,11 +224,26 @@ public class BookingService : IBookingService
         booking.CancellationReason = reason;
         booking.RefundAmount = refund;
 
+        var dailyBookings = await _db.DailyRoomBookings
+            .Where(d => d.RoomId == booking.RoomId && d.Date >= booking.CheckInDate && d.Date < booking.CheckOutDate)
+            .ToListAsync();
+        
+        foreach (var daily in dailyBookings)
+        {
+            daily.BookedQuantity -= booking.Quantity;
+            if (daily.BookedQuantity < 0) daily.BookedQuantity = 0;
+        }
+
         await _db.SaveChangesAsync();
 
         // Re-load navigation props for the response
         await _db.Entry(booking).Reference(b => b.Customer).LoadAsync();
         await _db.Entry(booking).Reference(b => b.Room).LoadAsync();
+
+        if (booking.Customer != null)
+        {
+            await _emailService.SendEmailAsync(booking.Customer.Email, "Booking Cancelled", $"Your booking {booking.BookingReference} has been cancelled.");
+        }
 
         return await BuildResponseDto(booking);
     }
@@ -210,7 +265,7 @@ public class BookingService : IBookingService
             CustomerId = b.CustomerId,
             CustomerName = b.Customer?.FullName ?? string.Empty,
             RoomId = b.RoomId,
-            RoomNumber = b.Room?.RoomNumber ?? string.Empty,
+            Quantity = b.Quantity,
             RoomType = b.Room?.RoomType ?? string.Empty,
             CheckInDate = b.CheckInDate,
             CheckOutDate = b.CheckOutDate,

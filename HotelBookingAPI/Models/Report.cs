@@ -14,7 +14,7 @@ public class BookingSummaryReport
 
 public class RoomOccupancyReport
 {
-    public string RoomNumber { get; set; } = string.Empty;
+    public int RoomId { get; set; }
     public string RoomType { get; set; } = string.Empty;
     public int BookingCount { get; set; }
     public decimal Revenue { get; set; }

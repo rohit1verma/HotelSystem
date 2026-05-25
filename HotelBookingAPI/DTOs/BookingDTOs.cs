@@ -9,7 +9,7 @@ public class BookingResponseDto
     public int CustomerId { get; set; }
     public string CustomerName { get; set; } = string.Empty;
     public int RoomId { get; set; }
-    public string RoomNumber { get; set; } = string.Empty;
+    public int Quantity { get; set; }
     public string RoomType { get; set; } = string.Empty;
     public DateTime CheckInDate { get; set; }
     public DateTime CheckOutDate { get; set; }
@@ -26,6 +26,10 @@ public class CreateBookingDto
 {
     [Required]
     public int RoomId { get; set; }
+
+    [Required]
+    [Range(1, 100)]
+    public int Quantity { get; set; } = 1;
 
     [Required]
     public DateTime CheckInDate { get; set; }

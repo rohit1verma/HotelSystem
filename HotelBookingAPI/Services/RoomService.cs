@@ -22,34 +22,46 @@ public class RoomService : IRoomService
 
         int nights = (int)(dto.CheckOutDate - dto.CheckInDate).TotalDays;
 
-        var query = _db.Rooms
-            .Where(r => r.IsActive && r.MaxGuests >= dto.NumberOfGuests)
-            .Where(r => !_db.Bookings.Any(b =>
-                b.RoomId == r.Id &&
-                b.Status != BookingStatus.Cancelled &&
-                b.CheckInDate < dto.CheckOutDate &&
-                b.CheckOutDate > dto.CheckInDate));
+        var baseQuery = _db.Rooms
+            .Where(r => r.IsActive && r.MaxGuests >= dto.NumberOfGuests);
 
         if (!string.IsNullOrWhiteSpace(dto.RoomType))
-            query = query.Where(r => r.RoomType == dto.RoomType);
+            baseQuery = baseQuery.Where(r => r.RoomType == dto.RoomType);
 
         if (dto.MaxPricePerNight.HasValue)
-            query = query.Where(r => r.PricePerNight <= dto.MaxPricePerNight.Value);
+            baseQuery = baseQuery.Where(r => r.PricePerNight <= dto.MaxPricePerNight.Value);
 
-        var rooms = await query.ToListAsync();
+        var rooms = await baseQuery.ToListAsync();
 
-        return rooms.Select(r => new AvailableRoomDto
+        var availableRoomsData = new List<(Room Room, int Available)>();
+
+        foreach (var room in rooms)
         {
-            RoomId = r.Id,
-            RoomNumber = r.RoomNumber,
-            RoomType = r.RoomType,
-            Description = r.Description,
-            PricePerNight = r.PricePerNight,
-            TotalPrice = r.PricePerNight * nights,
+            var dailyBookings = await _db.DailyRoomBookings
+                .Where(d => d.RoomId == room.Id && d.Date >= dto.CheckInDate && d.Date < dto.CheckOutDate)
+                .ToListAsync();
+
+            int maxBooked = dailyBookings.Count > 0 ? dailyBookings.Max(d => d.BookedQuantity) : 0;
+            int availableCount = room.TotalRooms - maxBooked;
+
+            if (availableCount >= dto.NumberOfRooms)
+            {
+                availableRoomsData.Add((room, availableCount));
+            }
+        }
+
+        return availableRoomsData.Select(r => new AvailableRoomDto
+        {
+            RoomId = r.Room.Id,
+            AvailableRooms = r.Available,
+            RoomType = r.Room.RoomType,
+            Description = r.Room.Description,
+            PricePerNight = r.Room.PricePerNight,
+            TotalPrice = r.Room.PricePerNight * nights,
             NumberOfNights = nights,
-            MaxGuests = r.MaxGuests,
-            Amenities = r.Amenities,
-            ImageUrl = r.ImageUrl
+            MaxGuests = r.Room.MaxGuests,
+            Amenities = r.Room.Amenities,
+            ImageUrl = r.Room.ImageUrl
         }).ToList();
     }
 
@@ -67,13 +79,9 @@ public class RoomService : IRoomService
 
     public async Task<RoomResponseDto> CreateRoomAsync(CreateRoomDto dto)
     {
-        var exists = await _db.Rooms.AnyAsync(r => r.RoomNumber == dto.RoomNumber);
-        if (exists)
-            throw new InvalidOperationException($"Room number '{dto.RoomNumber}' already exists.");
-
         var room = new Room
         {
-            RoomNumber = dto.RoomNumber,
+            TotalRooms = dto.TotalRooms,
             RoomType = dto.RoomType,
             Description = dto.Description,
             PricePerNight = dto.PricePerNight,
@@ -95,6 +103,7 @@ public class RoomService : IRoomService
         var room = await _db.Rooms.FindAsync(id);
         if (room is null) return null;
 
+        if (dto.TotalRooms.HasValue) room.TotalRooms = dto.TotalRooms.Value;
         if (dto.RoomType is not null) room.RoomType = dto.RoomType;
         if (dto.Description is not null) room.Description = dto.Description;
         if (dto.PricePerNight.HasValue) room.PricePerNight = dto.PricePerNight.Value;
@@ -123,7 +132,7 @@ public class RoomService : IRoomService
     private static RoomResponseDto MapToDto(Room r) => new()
     {
         Id = r.Id,
-        RoomNumber = r.RoomNumber,
+        TotalRooms = r.TotalRooms,
         RoomType = r.RoomType,
         Description = r.Description,
         PricePerNight = r.PricePerNight,

@@ -50,11 +50,11 @@ public class ReportService : IReportService
                 var room = g.First().Room;
                 return new RoomOccupancyReport
                 {
-                    RoomNumber = room.RoomNumber,
+                    RoomId = room.Id,
                     RoomType = room.RoomType,
-                    BookingCount = g.Count(),
+                    BookingCount = g.Sum(b => b.Quantity),
                     Revenue = g.Sum(b => b.TotalAmount),
-                    OccupancyRate = Math.Round((double)g.Count() / (bookings.Count == 0 ? 1 : bookings.Count) * 100, 2)
+                    OccupancyRate = Math.Round((double)g.Sum(b => b.Quantity) / (bookings.Sum(b => b.Quantity) == 0 ? 1 : bookings.Sum(b => b.Quantity)) * 100, 2)
                 };
             })
             .OrderByDescending(r => r.BookingCount)

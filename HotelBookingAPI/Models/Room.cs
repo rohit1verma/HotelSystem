@@ -3,7 +3,7 @@ namespace HotelBookingAPI.Models;
 public class Room
 {
     public int Id { get; set; }
-    public string RoomNumber { get; set; } = string.Empty;
+    public int TotalRooms { get; set; } = 1;
     public string RoomType { get; set; } = string.Empty;       // Single, Double, Suite, Deluxe
     public string Description { get; set; } = string.Empty;
     public decimal PricePerNight { get; set; }
@@ -16,4 +16,5 @@ public class Room
 
     // Navigation
     public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
-}
+    public ICollection<DailyRoomBooking> DailyBookings { get; set; } = new List<DailyRoomBooking>();
+}

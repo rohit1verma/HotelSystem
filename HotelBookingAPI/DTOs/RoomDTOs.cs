@@ -5,7 +5,7 @@ namespace HotelBookingAPI.DTOs;
 public class RoomResponseDto
 {
     public int Id { get; set; }
-    public string RoomNumber { get; set; } = string.Empty;
+    public int TotalRooms { get; set; }
     public string RoomType { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
     public decimal PricePerNight { get; set; }
@@ -18,8 +18,8 @@ public class RoomResponseDto
 public class CreateRoomDto
 {
     [Required]
-    [MaxLength(10)]
-    public string RoomNumber { get; set; } = string.Empty;
+    [Range(1, 1000)]
+    public int TotalRooms { get; set; } = 1;
 
     [Required]
     [MaxLength(50)]
@@ -42,6 +42,8 @@ public class CreateRoomDto
 
 public class UpdateRoomDto
 {
+    public int? TotalRooms { get; set; }
+
     [MaxLength(50)]
     public string? RoomType { get; set; }
 

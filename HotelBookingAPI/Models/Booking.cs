@@ -6,6 +6,7 @@ public class Booking
     public string BookingReference { get; set; } = string.Empty;  // e.g., HB-20250523-0001
     public int CustomerId { get; set; }
     public int RoomId { get; set; }
+    public int Quantity { get; set; } = 1;
     public DateTime CheckInDate { get; set; }
     public DateTime CheckOutDate { get; set; }
     public int NumberOfGuests { get; set; }
